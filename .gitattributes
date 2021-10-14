@@ -1,0 +1,27 @@
+# Per default everything gets normalized and gets LF line endings on checkout.
+* text eol=lf
+
+# These are binary so should never be modified by git.
+*.png binary
+*.jpg binary
+*.jpe binary
+*.jpeg binary
+*.JPG binary
+*.PNG binary
+*.ttf binary
+*.eot binary
+*.woff binary
+*.inv binary
+*.dxf binary
+*.mp4 binary
+*.wav binary -crlf
+*.mp3 binary
+*.hdf binary
+*.bat binary
+*.pdm binary
+*.doctree binary
+*.elf binary -crlf
+*.bin binary -crlf
+*.bit binary -crlf
+*.a binary -crlf
+*.bsp binary

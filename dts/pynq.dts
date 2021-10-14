@@ -1,0 +1,50 @@
+// Copyright (C) 2021 Xilinx, Inc
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
+/*
+ * Add zocl fragment to the device tree
+ */
+
+/dts-v1/;
+/plugin/;
+/ {
+	/*afi*/
+	/*TODO is afi necessary?*/
+	fragment@1 {
+		target = <&amba>;
+		overlay1: __overlay__ {
+			afi0: afi0 {
+				compatible = "xlnx,afi-fpga";
+				config-afi = <0 0>, <1 0>, <2 0>, <3 0>, <4 0>, <5 0>, <6 0>,
+							 <7 0>, <8 0>, <9 0>, <10 0>, <11 0>, <12 0>, 
+							 <13 0>, <14 0>, <15 0>;
+			};
+		};
+	};
+
+	/* zocl */
+	fragment@2 {
+		target = <&amba>;
+		overlay2: __overlay__ {
+			zocl: zyxclmm_drm {
+				compatible = "xlnx,zocl";
+				status = "okay";
+			};
+		};
+	};
+
+	/*uio*/
+	fragment@3 {
+		target = <&amba>;
+		overlay3: __overlay__ {
+			fabric: fabric@A0000000 {
+				interrupts = <0x00 0x59 0x04>;
+				interrupt-parent = <&gic>;
+				compatible = "generic-uio";
+				reg = <0x00 0xa0000000 0x00 0x10000>;
+			};
+		};
+	};
+
+};

@@ -1,0 +1,106 @@
+// Copyright (C) 2021 Xilinx, Inc
+//
+// SPDX-License-Identifier: BSD-3-Clause
+
+/*
+ * dts file for Xilinx KV260 base overlay
+ *
+ */
+
+/*For interrut connected to irq1 and mipi subsystem*/
+
+/dts-v1/;
+/plugin/;
+/ {
+	/* fpga clocks */
+	fragment@1 {
+		target = <&amba>;
+		overlay1: __overlay__ {
+			misc_clk_0: misc_clk_0 {
+				#clock-cells = <0x0>;
+				clock-frequency = <99999000>;
+				compatible = "fixed-clock";
+			};
+
+			misc_clk_1: misc_clk_1 {
+				#clock-cells = <0x0>;
+				clock-frequency = <199998000>;
+				compatible = "fixed-clock";
+			};
+
+			misc_clk_2: misc_clk_2 {
+				#clock-cells = <0x0>;
+				clock-frequency = <299997000>;
+				compatible = "fixed-clock";
+			};
+
+			misc_clk_5: misc_clk_5 {
+				#clock-cells = <0x0>;
+				clock-frequency = <49999500>;
+				compatible = "fixed-clock";
+			};
+
+			misc_clk_6: misc_clk_6 {
+				#clock-cells = <0x0>;
+				clock-frequency = <18432019>;
+				compatible = "fixed-clock";
+			};
+		};
+	};
+
+	/* ar1335 isp mipi rx pipeline */
+	fragment@2 {
+		target = <&amba>;
+		overlay2: __overlay__ {
+			
+			ap1302_clk: sensor_clk {
+				#clock-cells = <0x0>;
+				compatible = "fixed-clock";
+				clock-frequency = <0x48000000>;
+			};
+
+			axi_iic: i2c@80030000 {
+				#address-cells = <1>;
+				#size-cells = <0>;
+				clock-names = "s_axi_aclk";
+				clocks = <&misc_clk_0>;
+				compatible = "xlnx,axi-iic-2.0", "xlnx,xps-iic-2.00.a";
+				interrupt-names = "iic2intc_irpt";
+				interrupt-parent = <&gic>;
+				interrupts = <0 104 4>;
+				reg = <0x0 0x80030000 0x0 0x10000>;
+
+				i2c_mux: i2c-mux@74 {
+					compatible = "nxp,pca9546";
+					#address-cells = <1>;
+					#size-cells = <0>;
+					reg = <0x74>;
+					i2c@0 {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						reg = <0>;
+						ap1302: isp@3c {
+							compatible = "onnn,ap1302";
+							reg = <0x3c>;
+							#address-cells = <1>;
+							#size-cells = <0>;
+							reset-gpios = <&gpio 79 1>;
+							clocks = <&ap1302_clk>;
+						};
+					};
+					i2c@1 {
+						#address-cells = <1>;
+						#size-cells = <0>;
+						reg = <0x1>;
+					};					
+					i2c@2 {
+						#address-cells = <0x1>;
+						#size-cells = <0x0>;
+						reg = <0x2>;
+						label = "RPICAM";
+					};
+				};
+			};
+		};
+	};
+};

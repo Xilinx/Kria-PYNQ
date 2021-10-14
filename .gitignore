@@ -1,0 +1,14 @@
+# Copyright (C) 2021 Xilinx, Inc
+#
+# SPDX-License-Identifier: BSD-3-Clause
+
+*.log
+*.jou
+*.str
+.Xil/
+NA/
+__pycache__/
+*.dtbo
+*.bit
+*.hwh
+*.xsa
