@@ -21,7 +21,7 @@ echo -e "${GREEN}Installing PYNQ, this process takes around 25 minutes ${NC}"
 
 ARCH=aarch64
 HOME=/root
-PYNQ_JUPYTER_NOTEBOOKS=/home/ubuntu/jupyter_notebooks
+PYNQ_JUPYTER_NOTEBOOKS=/home/$LOGNAME/jupyter_notebooks
 BOARD=KV260
 PYNQ_VENV=/usr/local/share/pynq-venv
 
@@ -171,7 +171,7 @@ sed -i "s/opt\/microblaze/usr\/local\/share\/pynq-venv\/bin/g" /usr/local/share/
 rm -rf $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/app* $PYNQ_JUPYTER_NOTEBOOKS/pynq_peripherals/grove_joystick
 
 # Change notebooks folder ownership and permissions
-chown ubuntu:ubuntu -R $PYNQ_JUPYTER_NOTEBOOKS
+chown $LOGNAME:$LOGNAME -R $PYNQ_JUPYTER_NOTEBOOKS
 chmod ugo+rw -R $PYNQ_JUPYTER_NOTEBOOKS
 
 
