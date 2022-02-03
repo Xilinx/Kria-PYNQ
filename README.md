@@ -1,6 +1,6 @@
 ![](./kriapynq.png)
 
-This repository contains the install scripts needed to add PYNQ to your Kria SoM's official Ubuntu SDCard Image.  From that installation, a complete Python and Jupyter environment is installed on the Kria SoM along with multiple programmable logic overlays all ready to use.  
+This repository contains the install scripts needed to add PYNQ to your Kria KV260 Vision AI Starter Kit's official Ubuntu SDCard Image.  From that installation, a complete Python and Jupyter environment is installed on the Kria SOM along with multiple programmable logic overlays all ready to use.  
 
 ## Installation
 
