@@ -126,6 +126,10 @@ echo "python3 /usr/local/share/pynq-venv/pynq-dts/insert_dtbo.py" >> /etc/profil
 source /etc/profile.d/pynq_venv.sh
 popd
 
+# Set up pynq pl_server
+cp pynq/sdbuild/packages/pynq/pl_server.sh /usr/local/bin
+cp pynq/sdbuild/packages/pynq/pl_server.service /lib/systemd/system
+systemctl enable pl_server
 
 #Install base overlay
 python3 -m pip install .
