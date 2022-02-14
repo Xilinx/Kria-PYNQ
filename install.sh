@@ -184,9 +184,9 @@ chown $LOGNAME:$LOGNAME -R $PYNQ_JUPYTER_NOTEBOOKS
 chmod ugo+rw -R $PYNQ_JUPYTER_NOTEBOOKS
 
 
-# Start Jupyter service now
+# Start Jupyter and pl_server services now
 systemctl start jupyter.service
-
+systemctl start pl_server.service
 
 # Ask to connect to Jupyter
 ip_addr=$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
