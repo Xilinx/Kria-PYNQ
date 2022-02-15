@@ -126,6 +126,10 @@ echo "python3 /usr/local/share/pynq-venv/pynq-dts/insert_dtbo.py" >> /etc/profil
 source /etc/profile.d/pynq_venv.sh
 popd
 
+# Set up pynq pl_server
+cp pynq/sdbuild/packages/pynq/pl_server.sh /usr/local/bin
+cp pynq/sdbuild/packages/pynq/pl_server.service /lib/systemd/system
+systemctl enable pl_server
 
 #Install base overlay
 python3 -m pip install .
@@ -180,9 +184,9 @@ chown $LOGNAME:$LOGNAME -R $PYNQ_JUPYTER_NOTEBOOKS
 chmod ugo+rw -R $PYNQ_JUPYTER_NOTEBOOKS
 
 
-# Start Jupyter service now
+# Start Jupyter and pl_server services now
 systemctl start jupyter.service
-
+systemctl start pl_server.service
 
 # Ask to connect to Jupyter
 ip_addr=$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
