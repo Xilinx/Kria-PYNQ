@@ -141,7 +141,7 @@ python3 -m pip install pynq-helloworld
 
 # Install composable overlays
 pushd /tmp
-git clone https://github.com/Xilinx/PYNQ_Composable_Pipeline.git -b v1.0.0-dev
+git clone https://github.com/Xilinx/PYNQ_Composable_Pipeline.git
 python3 -m pip install PYNQ_Composable_Pipeline/ --no-use-pep517
 popd
 
@@ -191,5 +191,5 @@ systemctl start pl_server.service
 # Ask to connect to Jupyter
 ip_addr=$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 echo -e "${GREEN}PYNQ Installation completed.${NC}\n"
-echo -e "${YELLOW}To continue with the PYNQ experience, connect to JupyterLab via a web browser using this url: ${ip_addr}:9090/lab or $(hostname):9090/lab - The password is xilinx${NC}\n"
+echo -e "\n${YELLOW}To continue with the PYNQ experience, connect to JupyterLab via a web browser using this url: ${ip_addr}:9090/lab or $(hostname):9090/lab - The password is xilinx${NC}\n"
 
