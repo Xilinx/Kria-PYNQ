@@ -11,7 +11,7 @@ Follow the steps to [Get Started with Kria KV260 Vision AI Starter Kit](https://
 Then install PYNQ on your Kria KV260 Vision AI Starter Kit.  Simply clone this repository from the KV260 and run the install.sh script.
 
 ```bash
-git clone https://github.com/Xilinx/Kria-PYNQ.git
+git clone --recurse-submodules https://github.com/Xilinx/Kria-PYNQ.git
 cd Kria-PYNQ/
 sudo bash install.sh
 ```
