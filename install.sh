@@ -188,10 +188,6 @@ chmod ugo+rw -R $PYNQ_JUPYTER_NOTEBOOKS
 systemctl start jupyter.service
 systemctl start pl_server.service
 
-# Purge libdrm-xlnx-dev to allow `apt upgrade`
-apt-get purge -y libdrm-xlnx-dev
-apt-get purge -y libdrm-xlnx-amdgpu1
-
 # Ask to connect to Jupyter
 ip_addr=$(ip addr show eth0 | grep -oP '(?<=inet\s)\d+(\.\d+){3}')
 echo -e "${GREEN}PYNQ Installation completed.${NC}\n"
