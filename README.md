@@ -22,6 +22,16 @@ This script will install the required debian packages, create Python virtual env
 
 JupyterLab can now be accessed via a web browser `<ip_address>:9090/lab` or `kria:9090/lab`. The password is **xilinx**
 
+
+#### Configure static IP in the board
+
+The `install.sh` file pre-configures the board with and additional static IP address `192.168.2.99`. To finalize the configuration run:
+
+```sh
+cp /etc/netplan/backup/01-static-and-dynamic-ip.yaml /etc/netplan/
+sudo netplan apply
+```
+
 ## Included Overlays
 
 #### Base Overlay [\[GitHub\]](kv260/base)
