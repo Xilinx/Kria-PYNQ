@@ -115,6 +115,20 @@ popd
 # define the name of the platform
 echo "$BOARD" > /etc/xocl.txt
 
+# Include both static and DHCP IP in netplan.
+# This configuration is not activated until netplan apply is executed
+mkdir -p /etc/netplan/backup
+cat > /etc/netplan/backup/01-static-and-dynamic-ip.yaml <<EOT
+network:
+  version: 2
+  renderer: networkd
+  ethernets:
+    eth0:
+      optional: true
+      dhcp4: true
+      addresses:
+        - 192.168.2.99/24
+EOT
 
 # Compile pynq device tree overlay and insert it by default
 pushd dts/
