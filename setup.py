@@ -16,7 +16,8 @@ import shutil
 import tempfile
 import urllib.request
 from glob import glob
-from pynq.utils import build_py
+#from pynq.utils import build_py
+from pynqutils.setup_utils import build_py
 from setuptools import setup, find_packages
 
 
