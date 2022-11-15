@@ -16,26 +16,6 @@ if [ "$EUID" -ne 0 ]
   exit
 fi
 
-source /etc/lsb-release
-#echo $DISTRIB_RELEASE
-
-## -=-=-=-=-=-=-=-=- Check ubuntu version -=-=-=-=-=-=-=-=-
-case $DISTRIB_RELEASE in
-        20.04)
-                echo "This version of Kria-PYNQ is not compatible with Ubuntu 20.04 please checkout tag v1.0 with the command"
-                echo -e "\n\t\tgit checkout tags/v1.0\n"
-                exit 1
-                ;;
-        22.04)
-                echo "Ubuntu version 22.04 and Kria-PYNQ v3.0 version match"
-                ;;
-        *)
-                echo "Incompatible version of Ubuntu with Kria-PYNQ. Or unable to determine distribution version from /etc/lsb-release"
-                exit 1
-                ;;
-esac
-## -=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-=-
-
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #    Input Arguments
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
@@ -60,6 +40,26 @@ case $board in
 	*) echo -e $USAGE; exit 0;;
 esac
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+
+source /etc/lsb-release
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+#    Check ubuntu version 
+#~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+case $DISTRIB_RELEASE in
+        20.04)
+                echo -e "${RED}This version of Kria-PYNQ is not compatible with Ubuntu 20.04 please checkout tag v1.0 with the command${NC}"
+                echo -e "\n\t\tgit checkout tags/v1.0\n"
+                exit 1
+                ;;
+        22.04)
+                echo -e "${GREEN}Ubuntu version 22.04 and Kria-PYNQ v3.0 version match${NC}"
+                ;;
+        *)
+                echo -e "${RED}Incompatible version of Ubuntu with Kria-PYNQ. Or unable to determine distribution version from /etc/lsb-release${NC}"
+                exit 1
+                ;;
+esac
+
 
 echo -e "${GREEN}Installing PYNQ, this process takes around 25 minutes ${NC}"
 
