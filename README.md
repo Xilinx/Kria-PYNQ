@@ -60,7 +60,14 @@ __Supported boards__: _KV260_, _KR260_
 
 ## Selftest
 
-A self-test script for each board is generated at the end of the build. This test script runs some of the Overlay tests. To run the self-test navigate to the ``Kria-PYNQ`` install directory and run:
+A self-test script for each board is generated at the end of the build. This test script runs some of the Overlay tests. 
+For some of the tests specific peripherals need to be connected to the board:
+
+| **Board** | **Test name** | **Peripherals**                                                             |
+|-----------|---------------|-----------------------------------------------------------------------------|
+| KV260     | test\_apps     | <ul><li>1. A monitor connected to either the HDMI or DisplayPort</li><li>2. A USB Webcamera</li></ul>  |
+
+To run the self-test navigate to the ``Kria-PYNQ`` install directory and run:
 ```bash
 sudo ./selftest.sh
 ```
