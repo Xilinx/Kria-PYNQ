@@ -12,7 +12,7 @@ From that installation, a complete Python and Jupyter environment is installed o
 
 #### Users of Ubuntu 22.04 LTS
 If you wish to run Ubuntu 22.04 LTS, you may need to update the boot firmware to the latest version. For example, 2022.1 boot firmware is recommended for Ubuntu 22.04 LTS user. Ubuntu may not boot with mismatched firmware.
-The update methods can be found in [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#Boot-FW-Update-Process).
+The update methods can be found in [Kria Wiki](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#Ubuntu-LTS).
 
 #### KV260
 Follow the steps to [Get Started with Kria KV260 Vision AI Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit/kv260-getting-started-ubuntu/setting-up-the-sd-card-image.html) until you complete the [Booting your Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit/kv260-getting-started-ubuntu/booting-your-starter-kit.html) section.
@@ -71,6 +71,8 @@ sudo ./selftest.sh
 - [KV260 Vision AI Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit)
 - [KR260 Robotic Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html)
 - [Canonical Xilinx Ubuntu Images](https://ubuntu.com/download/xilinx)
+- [Kria K26 SOM WiKi](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#)
+
 
 ----
 ----
