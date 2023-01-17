@@ -289,10 +289,6 @@ cp pynq/sdbuild/packages/clear_pl_statefile/clear_pl_statefile.sh /usr/local/bin
 cp pynq/sdbuild/packages/clear_pl_statefile/clear_pl_statefile.service /lib/systemd/system
 systemctl enable clear_pl_statefile
 
-# Purge libdrm-xlnx-dev to allow `apt upgrade`
-apt-get purge -y libdrm-xlnx-dev
-apt-get purge -y libdrm-xlnx-amdgpu1
-
 # OpenCV
 python3 -m pip install opencv-python
 apt-get install ffmpeg libsm6 libxext6 -y
