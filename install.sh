@@ -118,7 +118,7 @@ apt update
 apt-get -o DPkg::Lock::Timeout=10 update && \
 apt-get install -y python3.10-venv python3-cffi libssl-dev libcurl4-openssl-dev \
   portaudio19-dev libcairo2-dev libdrm-xlnx-dev libopencv-dev python3-opencv graphviz i2c-tools \
-  fswebcam libboost-all-dev
+  fswebcam libboost-all-dev python3-dev python3-pip
 
 # Install PYNQ Virtual Environment 
 pushd pynq/sdbuild/packages/python_packages_jammy
