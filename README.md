@@ -26,7 +26,7 @@ Then install PYNQ on your Kria device.  Simply clone this repository from your K
 ```bash
 git clone https://github.com/Xilinx/Kria-PYNQ.git
 cd Kria-PYNQ/
-sudo bash install.sh -b { KV260 | KR260 } 
+sudo bash install.sh -b { KV260 | KR260 | KD240 } 
 ```
 
 This script will install the required debian packages, create Python virtual environment and configure a Jupyter portal.  This process takes around 25 minutes.
