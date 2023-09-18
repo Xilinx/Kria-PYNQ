@@ -19,7 +19,7 @@ fi
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 #    Input Arguments
 #~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-USAGE="${RED} usage: ${NC}  sudo ./install -b '{KV260 | KR260}'"
+USAGE="${RED} usage: ${NC}  sudo ./install -b '{KV260 | KR260 | KD240}'"
 
 if [ "$#" -ne 2 ]; then
    echo -e $USAGE
