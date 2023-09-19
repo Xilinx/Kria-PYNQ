@@ -3,6 +3,7 @@
 This repository contains the install scripts needed to add PYNQ to the official Ubuntu SDCard Image of your:
 * Kria KV260 Vision AI Starter Kit  
 * Kria KR260 Robotic Starter Kit
+* Kria KD240 Drives Starter Kit
 
 From that installation, a complete Python and Jupyter environment is installed on the Kria SOM along with multiple programmable logic overlays all ready to use.  
 
@@ -19,6 +20,9 @@ Follow the steps to [Get Started with Kria KV260 Vision AI Starter Kit](https://
 
 #### KR260
 Follow the steps to [Get Started with Kria KR260 Robotic Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit/kr260-getting-started/setting-up-the-sd-card-image.html) until you complete the [Booting your Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit/kr260-getting-started/booting-your-starter-kit.html) section.
+
+#### KD240
+Follow the steps to [Get Started with Kria KD240 Drives Starter Kit](https://www.xilinx.com/products/som/kria/kd240-drives-starter-kit/kd240-getting-started/getting-started.html) until you complete the Booting your Starter Kit section.
 
 #### 2. Install PYNQ
 Then install PYNQ on your Kria device.  Simply clone this repository from your Kria and run the install.sh script specifying the device with the `-b` flag.
@@ -46,7 +50,7 @@ __Supported boards__: _KV260_
 #### DPU-PYNQ (v2.5) [\[GitHub\]](https://github.com/Xilinx/DPU-PYNQ) [\[PYPI\]](https://pypi.org/project/pynq-dpu/)
 This overlay contains a Vitis-AI 2.5.0 Deep Learning Processor Unit (DPU) and comes with a variety of notebook examples with pre-trained ML models.
 
-__Supported boards__: _KV260_, _KR260_ 
+__Supported boards__: _KV260_, _KR260_, _KD240_
 
 #### Composable Pipeline (v1.1 soft-release) [\[GitHub\]](https://github.com/Xilinx/PYNQ_Composable_Pipeline) 
 The Composable pipeline is an overlay with a novel and clever architecture that allow us to adapt how the data flows between a series of IP cores.
@@ -77,6 +81,7 @@ sudo ./selftest.sh
 - [PYNQ](https://www.pynq.io)
 - [KV260 Vision AI Starter Kit](https://www.xilinx.com/products/som/kria/kv260-vision-starter-kit)
 - [KR260 Robotic Starter Kit](https://www.xilinx.com/products/som/kria/kr260-robotics-starter-kit.html)
+- [KD240 Drives Starter Kit](https://www.xilinx.com/products/som/kria/kd240-drives-starter-kit.html)
 - [Canonical Xilinx Ubuntu Images](https://ubuntu.com/download/xilinx)
 - [Kria K26 SOM WiKi](https://xilinx-wiki.atlassian.net/wiki/spaces/A/pages/1641152513/Kria+K26+SOM#)
 
