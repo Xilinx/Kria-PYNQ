@@ -83,7 +83,7 @@ popd
 
 ARCH=aarch64
 HOME=/root
-PYNQ_JUPYTER_NOTEBOOKS=/home/$LOGNAME/jupyter_notebooks
+PYNQ_JUPYTER_NOTEBOOKS=$(readlink -f ~)/jupyter_notebooks
 BOARD=$board
 PYNQ_VENV=/usr/local/share/pynq-venv
 
