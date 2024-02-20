@@ -17,7 +17,7 @@ import tempfile
 import urllib.request
 from glob import glob
 #from pynq.utils import build_py
-from pynqutils.setup_utils import build_py
+from pynqutils.setup_utils import build_py, find_version, extend_package
 from setuptools import setup, find_packages
 
 
@@ -29,34 +29,11 @@ data_files = []
 
 overlay = {
     "KV260": {
-                "url": "https://www.xilinx.com/bin/public/openDownload?filename=kv260_base_2.7.zip",
-                "md5sum": "b2a97221b04aead529a6a862d9d691ff",
+                "url": "https://www.xilinx.com/bin/public/openDownload?filename=kv260_base_3.0.zip",
+                "md5sum": "",
                 "format": "zip"
              }
 }
-
-
-def find_version(file_path):
-    """Parse version number"""
-
-    with open(file_path, "r") as fp:
-        version_file = fp.read()
-        version_match = re.search(r"^__version__ = ['\"]([^'\"]*)['\"]",
-                                  version_file, re.M)
-    if version_match:
-        return version_match.group(1)
-    raise NameError("Version string must be defined in {}.".format(file_path))
-
-
-# extend package
-def extend_package(path):
-    if os.path.isdir(path):
-        data_files.extend(
-            [os.path.join("..", root, f)
-             for root, _, files in os.walk(path) for f in files]
-        )
-    elif os.path.isfile(path):
-        data_files.append(os.path.join("..", path))
 
 
 def download_overlay(board, overlay_dest):
@@ -112,7 +89,7 @@ def copy_notebooks(board_folder, module_name):
 copy_notebooks("kv260/base", module_name)
 download_overlay(board, module_name)
 compile_dtbo("kv260/base/dts/", module_name)
-extend_package(module_name)
+extend_package(module_name, data_files)
 pkg_version = find_version("{}/__init__.py".format(module_name))
 
 setup(
@@ -129,7 +106,7 @@ setup(
     },
     python_requires=">=3.8.0",
     install_requires=[
-        "pynq>=2.7.0"
+        "pynq>=3.0.1"
     ],
     entry_points={
         "pynq.notebooks": ["kv260 = {}.notebooks".format(module_name)],

@@ -34,7 +34,7 @@ set script_folder [_tcl::get_script_folder]
 ################################################################
 # Check if script is running in correct Vivado version.
 ################################################################
-set scripts_vivado_version 2020.2
+set scripts_vivado_version 2022.1
 set current_vivado_version [version -short]
 
 if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
@@ -58,7 +58,7 @@ if { [string first $scripts_vivado_version $current_vivado_version] == -1 } {
 # Add user local board path and check if the board file exists
 set_param board.repoPaths [get_property LOCAL_ROOT_DIR [xhub::get_xstores xilinx_board_store]]
 
-set board [get_board_parts "*:kv260:*" -latest_file_version]
+set board [get_board_parts "*:kv260*" -latest_file_version]
 if { ${board} eq "" } {
    puts ""
    catch {common::send_gid_msg -ssname BD::TCL -id 2041 -severity "ERROR" "${board} board file is not found. Please install the board file either manually or using the Xilinx Board Store"}
@@ -157,16 +157,16 @@ set bCheckIPs 1
 if { $bCheckIPs == 1 } {
    set list_check_ips "\ 
 user.org:user:address_remap:1.0\
-xilinx.com:ip:axi_iic:2.0\
+xilinx.com:ip:axi_iic:2.1\
 xilinx.com:ip:axi_intc:4.1\
 xilinx.com:ip:axi_register_slice:2.1\
 xilinx.com:ip:xlslice:1.0\
 xilinx.com:ip:mdm:3.2\
-xilinx.com:ip:util_ds_buf:2.1\
+xilinx.com:ip:util_ds_buf:2.2\
 xilinx.com:ip:proc_sys_reset:5.0\
 xilinx.com:ip:dfx_axi_shutdown_manager:1.0\
 xilinx.com:ip:xlconcat:2.1\
-xilinx.com:ip:zynq_ultra_ps_e:3.3\
+xilinx.com:ip:zynq_ultra_ps_e:3.4\
 xilinx.com:user:dff_en_reset_vector:1.0\
 xilinx.com:ip:axi_gpio:2.0\
 xilinx.com:user:io_switch:1.1\
@@ -185,6 +185,7 @@ xilinx.com:ip:v_proc_ss:2.3\
 xilinx.com:ip:lmb_v10:3.0\
 xilinx.com:ip:blk_mem_gen:8.4\
 xilinx.com:ip:lmb_bram_if_cntlr:4.0\
+xilinx.com:ip:clk_wiz:6.0\
 "
 
    set list_ips_missing ""
@@ -437,6 +438,8 @@ proc create_hier_cell_mipi { parentCell nameHier } {
    CONFIG.C_GPIO2_WIDTH {1} \
    CONFIG.C_GPIO_WIDTH {1} \
    CONFIG.C_IS_DUAL {1} \
+   CONFIG.C_DOUT_DEFAULT {0x00000001} \
+   CONFIG.C_DOUT_DEFAULT_2 {0x00000001} \
  ] $gpio_ip_reset
 
   # Create instance: mipi_csi2_rx_subsyst, and set properties
@@ -590,7 +593,7 @@ proc create_hier_cell_iop_pmod0 { parentCell nameHier } {
  ] $gpio
 
   # Create instance: iic, and set properties
-  set iic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 iic ]
+  set iic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.1 iic ]
 
   # Create instance: intc, and set properties
   set intc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 intc ]
@@ -767,7 +770,7 @@ proc create_root_design { parentCell } {
  ] $address_remap_0
 
   # Create instance: axi_iic, and set properties
-  set axi_iic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.0 axi_iic ]
+  set axi_iic [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_iic:2.1 axi_iic ]
 
   # Create instance: axi_intc, and set properties
   set axi_intc [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_intc:4.1 axi_intc ]
@@ -812,7 +815,7 @@ proc create_root_design { parentCell } {
   create_hier_cell_mipi [current_bd_instance .] mipi
 
   # Create instance: pmod_buf, and set properties
-  set pmod_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.1 pmod_buf ]
+  set pmod_buf [ create_bd_cell -type ip -vlnv xilinx.com:ip:util_ds_buf:2.2 pmod_buf ]
   set_property -dict [ list \
    CONFIG.C_BUF_TYPE {IOBUF} \
    CONFIG.C_SIZE {8} \
@@ -821,7 +824,7 @@ proc create_root_design { parentCell } {
   # Create instance: ps8_0_axi_periph, and set properties
   set ps8_0_axi_periph [ create_bd_cell -type ip -vlnv xilinx.com:ip:axi_interconnect:2.1 ps8_0_axi_periph ]
   set_property -dict [ list \
-   CONFIG.NUM_MI {5} \
+   CONFIG.NUM_MI {6} \
    CONFIG.NUM_SI {1} \
  ] $ps8_0_axi_periph
 
@@ -838,14 +841,31 @@ proc create_root_design { parentCell } {
    CONFIG.DP_AXI_DATA_WIDTH {128} \
  ] $shutdown_LPD
 
+  # Create instance: shutdown_HP1, and set properties
+  set shutdown_HP1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:dfx_axi_shutdown_manager:1.0 shutdown_HP1 ]
+  set_property -dict [ list \
+   CONFIG.CTRL_INTERFACE_TYPE {1} \
+   CONFIG.DP_AXI_DATA_WIDTH {128} \
+ ] $shutdown_HP1
+
   # Create instance: xlconcat_1, and set properties
   set xlconcat_1 [ create_bd_cell -type ip -vlnv xilinx.com:ip:xlconcat:2.1 xlconcat_1 ]
   set_property -dict [ list \
    CONFIG.NUM_PORTS {4} \
  ] $xlconcat_1
 
+  # Create instance: xlconstant_0, and set properties
+  set clk_wiz_200 [ create_bd_cell -type ip -vlnv xilinx.com:ip:clk_wiz:6.0 clk_wiz_200 ]
+  set_property -dict [list \
+   CONFIG.CLKOUT1_REQUESTED_OUT_FREQ {200.000} \
+   CONFIG.USE_LOCKED {false} \
+   CONFIG.USE_RESET {false} \
+   CONFIG.MMCM_CLKOUT0_DIVIDE_F {6.000} \
+   CONFIG.CLKOUT1_JITTER {102.086}\
+  ] $clk_wiz_200
+
   # Create instance: zynq_ultra_ps_e_0, and set properties
-  set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.3 zynq_ultra_ps_e_0 ]
+  set zynq_ultra_ps_e_0 [ create_bd_cell -type ip -vlnv xilinx.com:ip:zynq_ultra_ps_e:3.4 zynq_ultra_ps_e_0 ]
   set_property -dict [ list \
    CONFIG.PSU_BANK_0_IO_STANDARD {LVCMOS18} \
    CONFIG.PSU_BANK_1_IO_STANDARD {LVCMOS18} \
@@ -1249,10 +1269,10 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__CRL_APB__PL0_REF_CTRL__DIVISOR1 {1} \
    CONFIG.PSU__CRL_APB__PL0_REF_CTRL__FREQMHZ {100} \
    CONFIG.PSU__CRL_APB__PL0_REF_CTRL__SRCSEL {IOPLL} \
-   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__ACT_FREQMHZ {187.498123} \
-   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__DIVISOR0 {8} \
+   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__ACT_FREQMHZ {299.997009} \
+   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__DIVISOR0 {5} \
    CONFIG.PSU__CRL_APB__PL1_REF_CTRL__DIVISOR1 {1} \
-   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__FREQMHZ {200} \
+   CONFIG.PSU__CRL_APB__PL1_REF_CTRL__FREQMHZ {300} \
    CONFIG.PSU__CRL_APB__PL1_REF_CTRL__SRCSEL {RPLL} \
    CONFIG.PSU__CRL_APB__PL2_REF_CTRL__ACT_FREQMHZ {299.997009} \
    CONFIG.PSU__CRL_APB__PL2_REF_CTRL__DIVISOR0 {5} \
@@ -1383,7 +1403,7 @@ proc create_root_design { parentCell } {
    CONFIG.PSU__FPD_SLCR__WDT_CLK_SEL__SELECT {APB} \
    CONFIG.PSU__FPGA_PL0_ENABLE {1} \
    CONFIG.PSU__FPGA_PL1_ENABLE {1} \
-   CONFIG.PSU__FPGA_PL2_ENABLE {1} \
+   CONFIG.PSU__FPGA_PL2_ENABLE {0} \
    CONFIG.PSU__GPIO0_MIO__IO {MIO 0 .. 25} \
    CONFIG.PSU__GPIO0_MIO__PERIPHERAL__ENABLE {1} \
    CONFIG.PSU__GPIO1_MIO__IO {MIO 26 .. 51} \
@@ -1505,7 +1525,8 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net axi_interconnect_0_M00_AXI [get_bd_intf_pins address_remap_0/S_AXI_in] [get_bd_intf_pins axi_interconnect_0/M00_AXI]
   connect_bd_intf_net -intf_net axi_register_slice_0_M_AXI [get_bd_intf_pins axi_register_slice_0/M_AXI] [get_bd_intf_pins shutdown_LPD/S_AXI]
   connect_bd_intf_net -intf_net microblaze_0_debug [get_bd_intf_pins iop_pmod0/DEBUG] [get_bd_intf_pins mdm_0/MBDEBUG_0]
-  connect_bd_intf_net -intf_net mipi_M_AXI_S2MM [get_bd_intf_pins mipi/M_AXI_S2MM] [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP1_FPD]
+  connect_bd_intf_net -intf_net mipi_M_AXI_S2MM [get_bd_intf_pins mipi/M_AXI_S2MM] [get_bd_intf_pins shutdown_HP1/S_AXI]
+  connect_bd_intf_net -intf_net shutdown_HP1 [get_bd_intf_pins shutdown_HP1/M_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_HP1_FPD]
   connect_bd_intf_net -intf_net mipi_cam_gpio [get_bd_intf_ports cam_gpio] [get_bd_intf_pins mipi/cam_gpio]
   connect_bd_intf_net -intf_net mipi_phy_if_0_0_1 [get_bd_intf_ports mipi_phy_if] [get_bd_intf_pins mipi/mipi_phy_if_0]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M00_AXI [get_bd_intf_pins axi_iic/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M00_AXI]
@@ -1513,6 +1534,7 @@ proc create_root_design { parentCell } {
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M02_AXI [get_bd_intf_pins axi_intc/s_axi] [get_bd_intf_pins ps8_0_axi_periph/M02_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M03_AXI [get_bd_intf_pins iop_pmod0/S_AXI] [get_bd_intf_pins ps8_0_axi_periph/M03_AXI]
   connect_bd_intf_net -intf_net ps8_0_axi_periph_M04_AXI [get_bd_intf_pins ps8_0_axi_periph/M04_AXI] [get_bd_intf_pins shutdown_LPD/S_AXI_CTRL]
+  connect_bd_intf_net -intf_net ps8_0_axi_periph_M05_AXI [get_bd_intf_pins ps8_0_axi_periph/M05_AXI] [get_bd_intf_pins shutdown_HP1/S_AXI_CTRL]
   connect_bd_intf_net -intf_net shutdown_LPD_M_AXI [get_bd_intf_pins shutdown_LPD/M_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/S_AXI_LPD]
   connect_bd_intf_net -intf_net zynq_ultra_ps_e_0_M_AXI_HPM0_LPD [get_bd_intf_pins ps8_0_axi_periph/S00_AXI] [get_bd_intf_pins zynq_ultra_ps_e_0/M_AXI_HPM0_LPD]
 
@@ -1527,18 +1549,18 @@ proc create_root_design { parentCell } {
   connect_bd_net -net mb_iop_pmod0_intr_ack_Dout [get_bd_pins iop_pmod0/intr_ack] [get_bd_pins mb_iop_pmod0_intr_ack/Dout]
   connect_bd_net -net mb_iop_pmod0_reset_Dout [get_bd_pins iop_pmod0/aux_reset_in] [get_bd_pins mb_iop_pmod0_reset/Dout]
   connect_bd_net -net mdm_0_Debug_SYS_Rst [get_bd_pins iop_pmod0/mb_debug_sys_rst] [get_bd_pins mdm_0/Debug_SYS_Rst]
-  connect_bd_net -net microblaze_0_Clk [get_bd_pins address_remap_0/m_axi_out_aclk] [get_bd_pins address_remap_0/s_axi_in_aclk] [get_bd_pins axi_iic/s_axi_aclk] [get_bd_pins axi_intc/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins iop_pmod0/clk_100M] [get_bd_pins mipi/clk_100MHz] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins shutdown_LPD/clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_ps_e_0/saxi_lpd_aclk]
+  connect_bd_net -net microblaze_0_Clk [get_bd_pins address_remap_0/m_axi_out_aclk] [get_bd_pins address_remap_0/s_axi_in_aclk] [get_bd_pins axi_iic/s_axi_aclk] [get_bd_pins axi_intc/s_axi_aclk] [get_bd_pins axi_interconnect_0/ACLK] [get_bd_pins axi_interconnect_0/M00_ACLK] [get_bd_pins axi_interconnect_0/S00_ACLK] [get_bd_pins axi_register_slice_0/aclk] [get_bd_pins iop_pmod0/clk_100M] [get_bd_pins mipi/clk_100MHz] [get_bd_pins ps8_0_axi_periph/ACLK] [get_bd_pins ps8_0_axi_periph/M00_ACLK] [get_bd_pins ps8_0_axi_periph/M02_ACLK] [get_bd_pins ps8_0_axi_periph/M03_ACLK] [get_bd_pins ps8_0_axi_periph/M04_ACLK] [get_bd_pins ps8_0_axi_periph/S00_ACLK] [get_bd_pins rst_ps8_0_99M/slowest_sync_clk] [get_bd_pins shutdown_LPD/clk] [get_bd_pins zynq_ultra_ps_e_0/maxihpm0_lpd_aclk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk0] [get_bd_pins zynq_ultra_ps_e_0/saxi_lpd_aclk] [get_bd_pins clk_wiz_200/clk_in1]
   connect_bd_net -net mipi_csirxss_csi_irq [get_bd_pins mipi/csirxss_csi_irq] [get_bd_pins xlconcat_1/In0]
   connect_bd_net -net mipi_s2mm_introut [get_bd_pins mipi/s2mm_introut] [get_bd_pins xlconcat_1/In1]
   connect_bd_net -net pmod_buf_IOBUF_IO_O [get_bd_pins iop_pmod0/data_i] [get_bd_pins pmod_buf/IOBUF_IO_O]
-  connect_bd_net -net rst_ps8_0_299M_peripheral_aresetn [get_bd_pins mipi/clk_300MHz_aresetn] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins rst_ps8_0_299M/peripheral_aresetn]
+  connect_bd_net -net rst_ps8_0_299M_peripheral_aresetn [get_bd_pins mipi/clk_300MHz_aresetn] [get_bd_pins ps8_0_axi_periph/M01_ARESETN] [get_bd_pins ps8_0_axi_periph/M05_ARESETN] [get_bd_pins rst_ps8_0_299M/peripheral_aresetn] [get_bd_pins shutdown_HP1/resetn]
   connect_bd_net -net rst_ps8_0_99M_interconnect_aresetn [get_bd_pins axi_interconnect_0/ARESETN] [get_bd_pins rst_ps8_0_99M/interconnect_aresetn]
   connect_bd_net -net rst_ps8_0_99M_peripheral_aresetn [get_bd_pins address_remap_0/m_axi_out_aresetn] [get_bd_pins address_remap_0/s_axi_in_aresetn] [get_bd_pins axi_iic/s_axi_aresetn] [get_bd_pins axi_intc/s_axi_aresetn] [get_bd_pins axi_interconnect_0/M00_ARESETN] [get_bd_pins axi_register_slice_0/aresetn] [get_bd_pins iop_pmod0/s_axi_aresetn] [get_bd_pins mipi/clk_100MHz_aresetn] [get_bd_pins ps8_0_axi_periph/ARESETN] [get_bd_pins ps8_0_axi_periph/M00_ARESETN] [get_bd_pins ps8_0_axi_periph/M02_ARESETN] [get_bd_pins ps8_0_axi_periph/M03_ARESETN] [get_bd_pins ps8_0_axi_periph/M04_ARESETN] [get_bd_pins ps8_0_axi_periph/S00_ARESETN] [get_bd_pins rst_ps8_0_99M/peripheral_aresetn] [get_bd_pins shutdown_LPD/resetn]
   connect_bd_net -net xlconcat_1_dout [get_bd_pins axi_intc/intr] [get_bd_pins xlconcat_1/dout]
   connect_bd_net -net zynq_ultra_ps_e_0_emio_gpio_o [get_bd_pins mb_iop_pmod0_intr_ack/Din] [get_bd_pins mb_iop_pmod0_reset/Din] [get_bd_pins zynq_ultra_ps_e_0/emio_gpio_o]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins mipi/dphy_clk_200M] [get_bd_pins zynq_ultra_ps_e_0/pl_clk1]
-  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk2 [get_bd_pins mipi/clk_300MHz] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins rst_ps8_0_299M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk2] [get_bd_pins zynq_ultra_ps_e_0/saxihp1_fpd_aclk]
+  connect_bd_net -net zynq_ultra_ps_e_0_pl_clk1 [get_bd_pins mipi/clk_300MHz] [get_bd_pins ps8_0_axi_periph/M01_ACLK] [get_bd_pins ps8_0_axi_periph/M05_ACLK] [get_bd_pins rst_ps8_0_299M/slowest_sync_clk] [get_bd_pins zynq_ultra_ps_e_0/pl_clk1] [get_bd_pins zynq_ultra_ps_e_0/saxihp1_fpd_aclk] [get_bd_pins shutdown_HP1/clk]
   connect_bd_net -net zynq_ultra_ps_e_0_pl_resetn0 [get_bd_pins rst_ps8_0_299M/ext_reset_in] [get_bd_pins rst_ps8_0_99M/ext_reset_in] [get_bd_pins zynq_ultra_ps_e_0/pl_resetn0]
+  connect_bd_net -net clk_wiz_200_clk_out1 [get_bd_pins clk_wiz_200/clk_out1] [get_bd_pins mipi/dphy_clk_200M]
 
   # Create address segments
   assign_bd_address -offset 0x00000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces address_remap_0/M_AXI_out] [get_bd_addr_segs zynq_ultra_ps_e_0/SAXIGP6/LPD_DDR_LOW] -force
@@ -1548,10 +1570,11 @@ proc create_root_design { parentCell } {
   assign_bd_address -offset 0x80040000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs mipi/demosaic/s_axi_CTRL/Reg] -force
   assign_bd_address -offset 0x80050000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs mipi/gamma_lut/s_axi_CTRL/Reg] -force
   assign_bd_address -offset 0x80060000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs mipi/gpio_ip_reset/S_AXI/Reg] -force
-  assign_bd_address -offset 0x800A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs iop_pmod0/mb_bram_ctrl/S_AXI/Mem0] -force
+  assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs iop_pmod0/mb_bram_ctrl/S_AXI/Mem0] -force
   assign_bd_address -offset 0x80000000 -range 0x00002000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs mipi/mipi_csi2_rx_subsyst/csirxss_s_axi/Reg] -force
   assign_bd_address -offset 0x80070000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs mipi/pixel_pack/s_axi_control/Reg] -force
-  assign_bd_address -offset 0x80020000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs shutdown_LPD/S_AXI_CTRL/Reg] -force
+  assign_bd_address -offset 0x800A0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs shutdown_LPD/S_AXI_CTRL/Reg] -force
+  assign_bd_address -offset 0x800B0000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs shutdown_HP1/S_AXI_CTRL/Reg] -force
   assign_bd_address -offset 0x80010000 -range 0x00010000 -target_address_space [get_bd_addr_spaces zynq_ultra_ps_e_0/Data] [get_bd_addr_segs mipi/v_proc_sys/s_axi_ctrl/Reg] -force
   assign_bd_address -offset 0x80000000 -range 0x80000000 -target_address_space [get_bd_addr_spaces iop_pmod0/microblaze_0/Data] [get_bd_addr_segs address_remap_0/S_AXI_in/memory] -force
   assign_bd_address -offset 0x40000000 -range 0x00010000 -target_address_space [get_bd_addr_spaces iop_pmod0/microblaze_0/Data] [get_bd_addr_segs iop_pmod0/gpio/S_AXI/Reg] -force
