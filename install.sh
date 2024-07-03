@@ -144,6 +144,10 @@ then
         exit 1
 fi
 
+# Numpy 2.0 workaround:
+# Install latest 1.* numpy so requirement is met for other packages
+python3 -m pip install numpy==1.26.4
+
 # Installing PYNQ-Metadata
 python3 -m pip install pynqmetadata==0.1.2 
 
