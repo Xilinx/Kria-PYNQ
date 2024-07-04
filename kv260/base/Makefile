@@ -3,7 +3,7 @@
 # SPDX-License-Identifier: BSD-3-Clause
 
 overlay_name := base
-version := 2.7
+version := 3.0
 
 all: pynq_hls block_design bitstream check_timing
 	@echo
@@ -11,6 +11,7 @@ all: pynq_hls block_design bitstream check_timing
 	@echo
 
 pynq_hls:
+	git submodule init && git submodule update
 	make -C ../../pynq/boards/ZCU104/base/ hls_ip
 
 block_design:
@@ -23,7 +24,7 @@ check_timing:
 	vivado -mode batch -source check_timing.tcl -notrace
 
 clean:
-	rm -rf *.jou *.log NA .Xil *.zip
+	rm -rf *.jou *.log NA .Xil *.zip *.str
 
 zip: dtbo
 	zip kv260_$(overlay_name)_$(version).zip $(overlay_name).bit $(overlay_name).hwh $(overlay_name).dtbo LICENSE
@@ -33,4 +34,4 @@ dtbo:
 	cp dts/$(overlay_name).dtbo .
 
 distclean: clean
-	rm -rf $(overlay_name) $(overlay_name).bit $(overlay_name).hwh $(overlay_name).xsa
+	rm -rf $(overlay_name) $(overlay_name).bit $(overlay_name).hwh $(overlay_name).xsa $(overlay_name).dtbo
